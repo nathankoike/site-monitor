@@ -2,7 +2,7 @@
 
 a small script to monitor a website for changes
 
-##### this script needs a config.json file that uses the following information:
+## this script needs a config.json file that uses the following information:
 
 url => the URL that you would like to monitor
 
