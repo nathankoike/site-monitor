@@ -8,7 +8,11 @@ const message =
 
 const regex = eval(config.regex);
 
-async function sendUpdate() {
+// used to control the while loop in the main function
+let loop = true;
+let res = { data: "" };
+
+async function notify() {
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
     service: "gmail",
@@ -30,15 +34,19 @@ async function sendUpdate() {
   console.log("Message sent: %s", info.messageId);
 }
 
-function main() {
-  while (true) {
-    break;
-    break;
-  }
+async function main() {
+  while (loop) {
+    await setTimeout(() => {
+      if (res.data.match(regex)) {
+        notify();
+        loop = false;
+      }
 
-  axios.get(config.url).then(res => {
-    console.log(res.match(regex));
-  });
+      console.log(i++);
+    }, 1000);
+
+    res = await axios.get(config.url);
+  }
 }
 
 main();
