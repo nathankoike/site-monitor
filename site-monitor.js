@@ -1,43 +1,44 @@
 const fs = require("fs");
 const axios = require("axios");
 const nodemailer = require("nodemailer");
-const readlineSync = require("readline-sync");
 const config = JSON.parse(fs.readFileSync("./config.json"));
 
-const email = config.email;
-const pass = readlineSync.question(`Enter the password for ${email}: `, {
-  hideEchoBack: true
-});
+const message =
+  "The RegEx you defined has been matched on the desired site, and the program has now terminated.\n\nThank you for using Site Monitor!";
 
-async function main() {
-  // Generate test SMTP service account from ethereal.email
-  // Only needed if you don't have a real mail account for testing
-  let testAccount = await nodemailer.createTestAccount();
+const regex = eval(config.regex);
 
+async function sendUpdate() {
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: testAccount.user, // generated ethereal user
-      pass: testAccount.pass // generated ethereal password
+      user: config.applicationEmail,
+      pass: config.applicationPass
     }
   });
 
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: '"Fred Foo 👻" <foo@example.com>',
-    to: "nkoike1998@gmail.com",
-    subject: "Hello ✔",
-    text: "Hello world?", // plain text body
-    html: "<b>Hello world?</b>" // html body
+    from: `"Site Monitor" <${config.applicationEmail}>`,
+    to: `${config.targetEmail}`,
+    subject: "Site Update Detected",
+    text: message,
+    html: `<p>${message}</p>`
   });
 
   console.log("Message sent: %s", info.messageId);
-
-  // Preview only available when sending through an Ethereal account
-  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 }
 
-console.log(pass);
+function main() {
+  while (true) {
+    break;
+    break;
+  }
 
-// main();
+  axios.get(config.url).then(res => {
+    console.log(res.match(regex));
+  });
+}
+
+main();
